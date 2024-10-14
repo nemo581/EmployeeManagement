@@ -16,6 +16,10 @@ public class EmployeeData {
         readingData();
     }
 
+    public List<Employee> getEmployeeList() {
+        return employeeList;
+    }
+
     private void readingData() {
         BufferedReader reader;
         try {
@@ -44,9 +48,5 @@ public class EmployeeData {
                 throw new RuntimeException(e);
             }
         }
-    }
-
-    public List<Employee> getEmployeeList() {
-        return employeeList;
     }
 }

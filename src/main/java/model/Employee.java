@@ -47,7 +47,7 @@ public class Employee {
     }
 
     public Map<LocalDate, Integer> getTestDate() {
-        return this.testDate;
+        return testDate;
     }
 
     public void setShift(int shift) {
