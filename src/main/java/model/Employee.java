@@ -1,17 +1,17 @@
 package model;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.Month;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Employee {
-    private final List<LocalDate> employeeWorkDays = new ArrayList<>();
-    private final LinkedHashMap<LocalDate, Integer> testDate = new LinkedHashMap<>();
+    private final LinkedHashMap<LocalDate, Integer> employeeWorkDays = new LinkedHashMap<>();
     private final String firstName;
     private final String lustName;
     private final String fatherName;
+    private Month month;
+    private int year;
     private int shift;
     private int marker;
 
@@ -34,6 +34,14 @@ public class Employee {
         return fatherName;
     }
 
+    public Month getMonth() {
+        return month;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
     public int getShift() {
         return shift;
     }
@@ -42,24 +50,24 @@ public class Employee {
         return marker;
     }
 
-    public List<LocalDate> getEmployeeWorkDays() {
+    public Map<LocalDate, Integer> getEmployeeWorkDays() {
         return employeeWorkDays;
     }
 
-    public Map<LocalDate, Integer> getTestDate() {
-        return testDate;
+    public void setMonth(Month month) {
+        this.month = month;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 
     public void setShift(int shift) {
         this.shift = shift;
     }
 
-    public void setEmployeeWorkDays(LocalDate date) {
-        this.employeeWorkDays.add(date);
-    }
-
-    public void setTestDate(LocalDate date, int mark) {
-        this.testDate.put(date, mark);
+    public void setEmployeeWorkDays(LocalDate date, int mark) {
+        this.employeeWorkDays.put(date, mark);
     }
 
     @Override
@@ -69,6 +77,6 @@ public class Employee {
                 ", lustName='" + lustName + '\'' +
                 ", fatherName='" + fatherName + '\'' +
                 ", shift=" + shift +
-                ", marker=" + marker +'}';
+                ", marker=" + marker + '}';
     }
 }

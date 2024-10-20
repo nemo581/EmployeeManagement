@@ -6,9 +6,10 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class EmployeeData {
-    private final List<Employee> employeeList = new ArrayList<>();
+    private final List<Employee> employeeList = new CopyOnWriteArrayList<>();
     private final String url;
 
     public EmployeeData(String url) {

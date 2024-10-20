@@ -5,9 +5,13 @@
   <artifactId>EmployeeManagement</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>EmployeeManagement Maven Webapp</name>
-  <url>http://maven.apache.org</url>
+
   <dependencies>
+    <dependency>
+      <groupId>org.apache.tomcat.embed</groupId>
+      <artifactId>tomcat-embed-core</artifactId>
+      <version>10.1.25</version>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -15,7 +19,20 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
-    <finalName>EmployeeManagement</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>11.0.22</version>
+        <configuration>
+          <scan>10</scan>
+          <webApp>
+            <contextPath>/my-app</contextPath>
+          </webApp>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>

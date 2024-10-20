@@ -32,26 +32,28 @@ public class WorkSchedule {
             vol = LocalDate.of(date_first.getYear(), date_first.getMonth(), i).getDayOfWeek().getValue();
             if (is_first) {
                 if (vol == 6 && weekend_days[wd][wd_index] == vol) {
-                    emp.setTestDate(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 1);
+                    emp.setEmployeeWorkDays(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 1);
                     wd_index++;
                 } else if (vol == 7) {
                     if (weekend_days[wd][0] == vol) {
-                        emp.setTestDate(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 1);
+                        emp.setEmployeeWorkDays(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 1);
                         wd_index++;
                     } else if (weekend_days[wd][wd_index + 1] == vol) {
-                        emp.setTestDate(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 1);
+                        emp.setEmployeeWorkDays(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 1);
                         wd++;
                     } else {
-                        emp.setTestDate(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 0);
+                        emp.setEmployeeWorkDays(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 0);
                         wd_index++;
                     }
                 } else if (vol == 1 && weekend_days[wd][1] == vol) {
-                    emp.setTestDate(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 1);
+                    emp.setEmployeeWorkDays(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 1);
                     wd++;
                 } else {
-                    emp.setTestDate(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 0);
+                    emp.setEmployeeWorkDays(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 0);
                     if (vol == 1) wd++;
                 }
+                emp.setMonth(date_first.getMonth());
+                emp.setYear(date_first.getYear());
                 is_first = false;
                 if (wd == 3) {
                     wd = 0;
@@ -59,10 +61,10 @@ public class WorkSchedule {
                 }
             } else {
                 if (weekend_days[wd][wd_index] == vol) {
-                    emp.setTestDate(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 1);
+                    emp.setEmployeeWorkDays(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 1);
                     wd_index++;
                 } else {
-                    emp.setTestDate(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 0);
+                    emp.setEmployeeWorkDays(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 0);
                 }
                 if (wd_index == 2) {
                     wd++;
