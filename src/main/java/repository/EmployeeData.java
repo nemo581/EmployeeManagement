@@ -2,18 +2,16 @@ package repository;
 
 import model.Employee;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.sql.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class EmployeeData {
-    private final List<Employee> employeeList = new CopyOnWriteArrayList<>();
-    private final String url;
+    private volatile Connection connection;
+    private volatile Statement statement;
+    private static volatile List<Employee> employeeList;
 
-    public EmployeeData(String url) {
-        this.url = url;
+    public EmployeeData() {
         readingData();
     }
 
@@ -21,33 +19,51 @@ public class EmployeeData {
         return employeeList;
     }
 
-    private void readingData() {
-        BufferedReader reader;
+    private synchronized Statement getDBConnection() {
         try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(url), StandardCharsets.UTF_8));
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            connection = DriverManager.getConnection(System.getenv("DB_URL"),
+                                                     System.getenv("DB_USER"),
+                                                     System.getenv("DB_PASSWD"));
+            statement = connection.createStatement();
+        } catch (SQLException sql) {
+            throw new RuntimeException(sql);
         }
+        return statement;
+    }
 
-        String line;
+    public synchronized void deleteDataById(int id) {
+        String SQL = "DELETE FROM db_simple.employee WHERE (id = " + id + ")";
         try {
-            line = reader.readLine();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            getDBConnection().executeUpdate(SQL);
+            closeConnection();
+            readingData();
+        } catch (SQLException sql) {
+            throw new RuntimeException(sql);
         }
+    }
 
-        while (line != null) {
-            String[] arr = line.split(" ");
-            if (arr.length == 4) {
-                employeeList.add(new Employee(arr[1], arr[2], arr[3], Integer.parseInt(arr[0])));
-            } else if (arr.length == 3) {
-                employeeList.add(new Employee(arr[1], arr[2], null, Integer.parseInt(arr[0])));
+    private synchronized void readingData() {
+        String SQL = "SELECT * FROM db_simple.employee;";
+        employeeList = new CopyOnWriteArrayList<>();
+        try (ResultSet resultSet = getDBConnection().executeQuery(SQL)){
+            while (resultSet.next()) {
+                employeeList.add(new Employee(resultSet.getString("first_name"),
+                        resultSet.getString("last_name"),
+                        resultSet.getString("patronymic_name"),
+                        resultSet.getInt("shift")));
             }
-            try {
-                line = reader.readLine();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            closeConnection();
+        } catch (SQLException sql) {
+            throw new RuntimeException(sql);
+        }
+    }
+
+    private synchronized void closeConnection() {
+        try {
+            if (this.statement != null) this.statement.close();
+            if (this.connection != null) this.connection.close();
+        } catch (SQLException sql) {
+            throw new RuntimeException(sql);
         }
     }
 }

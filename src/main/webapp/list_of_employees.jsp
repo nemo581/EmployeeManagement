@@ -8,7 +8,7 @@
     <title>List-Of-Employees</title>
 </head>
 <body>
-<form method"post" action="/my-app/">
+<form method"post" action="/simple/">
     <button type="submit">Главная</button>
 </form>
 <% int count = 1; %>

@@ -15,14 +15,14 @@
             <tbody>
                 <tr>
                     <td>
-                        <form method"post" action="/my-app/employees_list">
+                        <form method"post" action="/simple/employees_list">
                             <button type="submit">Список сотрудников</button>
                         </form>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <form method"post" action="/my-app/work_schedule">
+                        <form method"post" action="/simple/work_schedule">
                             <button type="submit">Расписание на месяц</button>
                         </form>
                     </td>
