@@ -14,8 +14,10 @@ public class Employee {
     private int year;
     private int shift;
     private int marker;
+    private int id;
 
-    public Employee(String firstName, String lustName, String fatherName, int shift) {
+    public Employee(int id, String firstName, String lustName, String fatherName, int shift) {
+        this.id = id;
         this.firstName = firstName;
         this.lustName = lustName;
         this.fatherName = fatherName;
@@ -53,6 +55,9 @@ public class Employee {
     public Map<LocalDate, Integer> getEmployeeWorkDays() {
         return employeeWorkDays;
     }
+    public int getId() {
+        return this.id;
+    }
 
     public void setMonth(Month month) {
         this.month = month;
@@ -68,6 +73,9 @@ public class Employee {
 
     public void setEmployeeWorkDays(LocalDate date, int mark) {
         this.employeeWorkDays.put(date, mark);
+    }
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

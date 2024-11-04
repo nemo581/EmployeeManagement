@@ -13,47 +13,50 @@ public class WorkSchedule {
 
     public WorkSchedule(LocalDate date) {
         this.date_first = date.withDayOfMonth(1);
-        this.date_last = date.withDayOfMonth(date.getMonth().length(date.isLeapYear()));
+        this.date_last = LocalDate.of(date.getYear(), 12, 31);
     }
 
     public void getWorkSchedule(EmployeeData data) {
         for (Employee emp : data.getEmployeeList()) {
-            workScheduleService(emp, emp.getShift());
+            workScheduleService(data, emp, emp.getShift());
         }
     }
 
-    private void workScheduleService(Employee emp, int sh) {
+/*
+        >>>> T-E-S-T  V-E-R-S-I-O-N <<<<
+*/
+    private void workScheduleService(EmployeeData employeeData, Employee emp, int sh) {
         int wd = sh - 1;
         int wd_index = 0;
         int vol;
         boolean is_first = true;
+        LocalDate tmp = date_first;
 
-        for (int i = date_first.getDayOfMonth(); i <= date_last.getDayOfMonth(); i++) {
-            vol = LocalDate.of(date_first.getYear(), date_first.getMonth(), i).getDayOfWeek().getValue();
+        while (!tmp.equals(date_last)) {
+            vol = tmp.getDayOfWeek().getValue();
             if (is_first) {
                 if (vol == 6 && weekend_days[wd][wd_index] == vol) {
-                    emp.setEmployeeWorkDays(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 1);
+                    employeeData.addWorkSchedule(tmp, 1, emp.getId());
                     wd_index++;
                 } else if (vol == 7) {
                     if (weekend_days[wd][0] == vol) {
-                        emp.setEmployeeWorkDays(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 1);
+                        employeeData.addWorkSchedule(tmp, 1, emp.getId());
                         wd_index++;
                     } else if (weekend_days[wd][wd_index + 1] == vol) {
-                        emp.setEmployeeWorkDays(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 1);
+                        employeeData.addWorkSchedule(tmp, 1, emp.getId());
                         wd++;
                     } else {
-                        emp.setEmployeeWorkDays(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 0);
+                        employeeData.addWorkSchedule(tmp, 0, emp.getId());
                         wd_index++;
                     }
                 } else if (vol == 1 && weekend_days[wd][1] == vol) {
-                    emp.setEmployeeWorkDays(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 1);
+                    employeeData.addWorkSchedule(tmp, 1, emp.getId());
                     wd++;
                 } else {
-                    emp.setEmployeeWorkDays(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 0);
+                    employeeData.addWorkSchedule(tmp, 0, emp.getId());
                     if (vol == 1) wd++;
                 }
-                emp.setMonth(date_first.getMonth());
-                emp.setYear(date_first.getYear());
+
                 is_first = false;
                 if (wd == 3) {
                     wd = 0;
@@ -61,10 +64,10 @@ public class WorkSchedule {
                 }
             } else {
                 if (weekend_days[wd][wd_index] == vol) {
-                    emp.setEmployeeWorkDays(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 1);
+                    employeeData.addWorkSchedule(tmp, 1, emp.getId());
                     wd_index++;
                 } else {
-                    emp.setEmployeeWorkDays(LocalDate.of(date_first.getYear(), date_first.getMonth(), i), 0);
+                    employeeData.addWorkSchedule(tmp, 0, emp.getId());
                 }
                 if (wd_index == 2) {
                     wd++;
@@ -72,6 +75,7 @@ public class WorkSchedule {
                     wd_index = 0;
                 }
             }
+            tmp = tmp.plusDays(1);
         }
     }
 }

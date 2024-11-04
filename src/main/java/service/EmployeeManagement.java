@@ -12,7 +12,7 @@ public class EmployeeManagement {
 
     public EmployeeManagement() {
         this.empData = new EmployeeData();
-        WorkSchedule workSchedule = new WorkSchedule(LocalDate.of(2025, 1, 1));
+        WorkSchedule workSchedule = new WorkSchedule(LocalDate.of(2024, 1, 1));
         workSchedule.getWorkSchedule(empData);
     }
 
