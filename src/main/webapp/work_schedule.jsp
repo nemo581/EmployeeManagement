@@ -16,48 +16,38 @@
     <button type="submit">Главная</button>
 </form>
 <% int count = 1; %>
-<% List<Employee> employee_list = (List) request.getAttribute("employee_list"); %>
-<b><%= employee_list.get(0).getMonth() %> <%= employee_list.get(0).getYear() %></b>
+<% List<Employee> work_schedule = (List) request.getAttribute("work_schedule"); %>
+<b><%= LocalDate.now().getMonth() %> <%= LocalDate.now().getYear() %></b>
 <p>
 <table>
     <thead>
-    <tr>
-        <th width="20" align="center">№</th>
-        <th width="20"></th>
-        <th align="left">Ф.И.О.</th>
-        <% for(Map.Entry<LocalDate, Integer> d : employee_list.get(0).getEmployeeWorkDays().entrySet()) { %>
-            <th>
-            <% if((d.getKey().getDayOfWeek().getValue()) == 6 ||
-                  (d.getKey().getDayOfWeek().getValue()) == 7) { %>
-                <font color = "#ff0000"><%= d.getKey().getDayOfMonth() %> </font>
-            <% } else { %>
-                <%= d.getKey().getDayOfMonth() %>
-            <% } %>
-            </th>
-        <% } %>
-    </tr>
+        <tr>
+            <th width="20" align="center">№</th>
+            <th width="20"></th>
+            <th align="left">Ф.И.О.</th>
+        </tr>
     </thead>
     <tbody>
-    <% for (Employee employee : employee_list) { %>
-    <tr>
-        <td width="20" align="center"><%= count %></td>
-        <td width="20" align="center"><%= employee.getShift()%></td>
-        <td><%= employee.getFirstName()%>
-            <%= employee.getLustName()%>
-            <%= employee.getFatherName()%>
-        </td>
-        <% for (Map.Entry<LocalDate, Integer> sh : employee.getEmployeeWorkDays().entrySet()) { %>
-        <td>
-            <% if(sh.getValue() == 1) { %>
-                <font color = "#ff0000"><%= sh.getKey().getDayOfMonth() %></font>
-            <% } else if (sh.getValue() == 0) { %>
-                <%= sh.getKey().getDayOfMonth() %>
-            <% } %>
-        </td>
+        <% for (Employee employee : work_schedule) { %>
+            <tr>
+                <td width="20" align="center"><%= count %></td>
+                <td width="20" align="center"><%= employee.getShift()%></td>
+                <td><%= employee.getFirstName()%>
+                    <%= employee.getLustName()%>
+                    <%= employee.getPatronymicName() %>
+                </td>
+                <% for (Map.Entry<LocalDate, Integer> sh : employee.getEmployeeWorkDays().entrySet()) { %>
+                    <td>
+                        <% if(sh.getValue() == 1) { %>
+                            <font color = "#ff0000"><%= sh.getKey().getDayOfMonth() %></font>
+                        <% } else if (sh.getValue() == 0) { %>
+                            <%= sh.getKey().getDayOfMonth() %>
+                        <% } %>
+                    </td>
+                <% } %>
+            </tr>
+            <% count++; %>
         <% } %>
-    </tr>
-    <% count++; %>
-    <% } %>
     </tbody>
 </table>
 </body>

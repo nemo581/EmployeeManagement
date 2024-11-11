@@ -1,6 +1,7 @@
 package repository;
 
 import model.Employee;
+import service.WorkSchedule;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -12,50 +13,89 @@ public class EmployeeData {
     private volatile Statement statement;
     private static volatile List<Employee> employeeList;
 
-    public EmployeeData() {
-        readingData();
-    }
-
-    public List<Employee> getEmployeeList() {
+    public synchronized List<Employee> getAllEmployees() {
+        employeeList = new CopyOnWriteArrayList<>();
+        String SQL = "SELECT * FROM db_simple.employee;";
+        try (ResultSet resultSet = getDBConnection().executeQuery(SQL)) {
+            while (resultSet.next()) {
+                Employee employee = new Employee(resultSet.getInt("id"),
+                                                 resultSet.getString("first_name"),
+                                                 resultSet.getString("last_name"),
+                                                 resultSet.getString("patronymic_name"),
+                                                 resultSet.getInt("shift"));
+                employeeList.add(employee);
+            }
+            closeConnection();
+        } catch (SQLException sql) {
+            closeConnection();
+            throw new RuntimeException(sql);
+        }
         return employeeList;
     }
 
-    private synchronized Statement getDBConnection() {
-        try {
-            connection = DriverManager.getConnection(System.getenv("DB_URL"),
-                                                     System.getenv("DB_USER"),
-                                                     System.getenv("DB_PASSWD"));
-            statement = connection.createStatement();
-        } catch (SQLException sql) {
-            throw new RuntimeException(sql);
-        }
-        return statement;
-    }
-
-    public synchronized void addWorkSchedule(LocalDate date, int mark, int id) {
-        java.sql.Date date1 = java.sql.Date.valueOf(date);
-        String SQL = "INSERT INTO db_simple.date (date, flag, employee_id) VALUES ('" + date + "', " + mark + ", " + id + ");";
-        System.out.println("[ADD NEW ENTRY] " + SQL);
-        try {
-            getDBConnection().executeUpdate(SQL);
+    public synchronized Employee getEmployeeById(int id) {
+        Employee employee = null;
+        String SQL = "select * from db_simple.employee where id = " + id + ";";
+        try (ResultSet resultSet = getDBConnection().executeQuery(SQL)){
+            while (resultSet.next()) {
+                employee = new Employee(resultSet.getInt("id"),
+                                        resultSet.getString("first_name"),
+                                        resultSet.getString("last_name"),
+                                        resultSet.getString("patronymic_name"),
+                                        resultSet.getInt("shift"));
+            }
             closeConnection();
-            readingData();
         } catch (SQLException sql) {
-            System.out.println("[ERROR] СТРОКА 43");
             closeConnection();
             throw new RuntimeException(sql);
         }
+        return employee;
     }
 
-    public synchronized void addEmployee(Employee employee) {
+    public synchronized List<Employee> getAllWorkSchedule() {
+        employeeList = getAllEmployees();
+        for (Employee emp : employeeList) {
+            String SQL = "select * from db_simple.date  \n" +
+                         "where employee_id = " + emp.getId() + " and date \n" +
+                         "between '2024-11-01' and '2024-11-30' \n" +
+                         "order by date;";
+            try (ResultSet resultSet = getDBConnection().executeQuery(SQL)) {
+                while (resultSet.next()) {
+                    emp.setEmployeeWorkDays(resultSet.getDate("date").toLocalDate(),
+                                            resultSet.getInt("flag"));
+                }
+            } catch (SQLException sql) {
+                closeConnection();
+                throw new RuntimeException(sql);
+            }
+        }
+        return employeeList;
+    }
+
+    public synchronized Employee getWorkScheduleById(int id) {
+        Employee employee = getEmployeeById(id);
+        String SQL = "SELECT * FROM db_simple.date where employee_id = " + id + " and date between '2024-11-01' and '2024-11-30' order by date;";
+        try (ResultSet resultSet = getDBConnection().executeQuery(SQL)) {
+            while (resultSet.next()) {
+                employee.setEmployeeWorkDays(resultSet.getDate("date").toLocalDate(), resultSet.getInt("flag"));
+            }
+            closeConnection();
+        } catch (SQLException sql) {
+            System.out.println("[ERROR] СТРОКА 65");
+            closeConnection();
+            throw new RuntimeException(sql);
+        }
+        return employee;
+    }
+
+    public synchronized void addNewEmployee(Employee employee) {
         String SQL = "INSERT INTO db_simple.employee (shift, first_name, last_name, patronymic_name) VALUES (" + employee.getShift() + ", " +
-                                                                                                                 employee.getFirstName() + ", " +
-                                                                                                                 employee.getLustName() + ", " +
-                                                                                                                 employee.getFatherName() + ");";
+                employee.getFirstName() + ", " +
+                employee.getLustName() + ", " +
+                employee.getPatronymicName() + ");";
         try {
             getDBConnection().executeUpdate(SQL);
             closeConnection();
-            readingData();
         } catch (SQLException sql) {
             closeConnection();
             throw new RuntimeException(sql);
@@ -63,33 +103,37 @@ public class EmployeeData {
     }
 
     public synchronized void deleteEmployee(int id) {
-        String SQL = "DELETE FROM db_simple.employee WHERE (id = " + id + ")";
+    }
+
+    public synchronized void fillInTheSchedule(LocalDate date, int mark, int employeeId) {
+        String SQL = "INSERT INTO db_simple.date (date, flag, employee_id) VALUES ('" + date + "', " + mark + ", " + employeeId + ");";
+        System.out.println("[ADD NEW ENTRY] " + SQL);
         try {
             getDBConnection().executeUpdate(SQL);
             closeConnection();
-            readingData();
         } catch (SQLException sql) {
+            System.out.println("[ERROR] СТРОКА 76");
             closeConnection();
             throw new RuntimeException(sql);
         }
     }
 
-    private synchronized void readingData() {
-        String SQL = "SELECT * FROM db_simple.employee;";
-        employeeList = new CopyOnWriteArrayList<>();
-        try (ResultSet resultSet = getDBConnection().executeQuery(SQL)){
-            while (resultSet.next()) {
-                employeeList.add(new Employee(resultSet.getInt("id"),
-                                              resultSet.getString("first_name"),
-                                              resultSet.getString("last_name"),
-                                              resultSet.getString("patronymic_name"),
-                                              resultSet.getInt("shift")));
-            }
-            closeConnection();
+    public void updateWorkSchedule() {
+        int year = LocalDate.now().getYear() + 1;
+        WorkSchedule workSchedule = new WorkSchedule(LocalDate.of(year, 1, 1));
+        workSchedule.getWorkSchedule(this);
+    }
+
+    private synchronized Statement getDBConnection() {
+        try {
+            connection = DriverManager.getConnection(System.getenv("DB_URL"),
+                    System.getenv("DB_USER"),
+                    System.getenv("DB_PASSWD"));
+            statement = connection.createStatement();
         } catch (SQLException sql) {
-            closeConnection();
             throw new RuntimeException(sql);
         }
+        return statement;
     }
 
     private synchronized void closeConnection() {
@@ -99,5 +143,9 @@ public class EmployeeData {
         } catch (SQLException sql) {
             throw new RuntimeException(sql);
         }
+    }
+
+    public List<Employee> getEmployeeList() {
+        return employeeList;
     }
 }

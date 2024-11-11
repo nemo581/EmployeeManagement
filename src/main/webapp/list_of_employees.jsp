@@ -15,11 +15,11 @@
 <% List<Employee> employee_list = (List) request.getAttribute("employee_list"); %>
 <table>
     <thead>
-    <tr>
-        <th width="20" align="center">№</th>
-        <th width="20"></th>
-        <th align="left">Ф.И.О.</th>
-    </tr>
+        <tr>
+            <th width="20" align="center">№</th>
+            <th width="20"></th>
+            <th align="left">Ф.И.О.</th>
+        </tr>
     </thead>
     <tbody>
     <% for (Employee employee : employee_list) { %>
@@ -28,7 +28,7 @@
         <td width="20" align="center"><%= employee.getShift()%></td>
         <td><%= employee.getFirstName()%>
             <%= employee.getLustName()%>
-            <%= employee.getFatherName()%>
+            <%= employee.getPatronymicName()%>
         </td>
     </tr>
     <% count++; %>

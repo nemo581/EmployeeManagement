@@ -9,7 +9,7 @@ public class Employee {
     private final LinkedHashMap<LocalDate, Integer> employeeWorkDays = new LinkedHashMap<>();
     private final String firstName;
     private final String lustName;
-    private final String fatherName;
+    private final String patronymic_name;
     private Month month;
     private int year;
     private int shift;
@@ -20,7 +20,7 @@ public class Employee {
         this.id = id;
         this.firstName = firstName;
         this.lustName = lustName;
-        this.fatherName = fatherName;
+        this.patronymic_name = fatherName;
         this.shift = shift;
     }
 
@@ -32,8 +32,8 @@ public class Employee {
         return lustName;
     }
 
-    public String getFatherName() {
-        return fatherName;
+    public String getPatronymicName() {
+        return patronymic_name;
     }
 
     public Month getMonth() {
@@ -52,7 +52,7 @@ public class Employee {
         return marker;
     }
 
-    public Map<LocalDate, Integer> getEmployeeWorkDays() {
+    public LinkedHashMap<LocalDate, Integer> getEmployeeWorkDays() {
         return employeeWorkDays;
     }
     public int getId() {
@@ -80,11 +80,8 @@ public class Employee {
 
     @Override
     public String toString() {
-        return "Employee{" +
-                "firstName='" + firstName + '\'' +
-                ", lustName='" + lustName + '\'' +
-                ", fatherName='" + fatherName + '\'' +
-                ", shift=" + shift +
-                ", marker=" + marker + '}';
+        return String.format("Employee{'%-13s %-10s %-15s' [%s %d] [marker=%d] emp_work_days%s}",
+                firstName, lustName, patronymic_name, "shift=", shift, marker, employeeWorkDays);
+
     }
 }

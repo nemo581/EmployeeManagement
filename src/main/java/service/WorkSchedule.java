@@ -17,6 +17,7 @@ public class WorkSchedule {
     }
 
     public void getWorkSchedule(EmployeeData data) {
+        System.out.println("data: " + data);
         for (Employee emp : data.getEmployeeList()) {
             workScheduleService(data, emp, emp.getShift());
         }
@@ -36,24 +37,24 @@ public class WorkSchedule {
             vol = tmp.getDayOfWeek().getValue();
             if (is_first) {
                 if (vol == 6 && weekend_days[wd][wd_index] == vol) {
-                    employeeData.addWorkSchedule(tmp, 1, emp.getId());
+                    employeeData.fillInTheSchedule(tmp, 1, emp.getId());
                     wd_index++;
                 } else if (vol == 7) {
                     if (weekend_days[wd][0] == vol) {
-                        employeeData.addWorkSchedule(tmp, 1, emp.getId());
+                        employeeData.fillInTheSchedule(tmp, 1, emp.getId());
                         wd_index++;
                     } else if (weekend_days[wd][wd_index + 1] == vol) {
-                        employeeData.addWorkSchedule(tmp, 1, emp.getId());
+                        employeeData.fillInTheSchedule(tmp, 1, emp.getId());
                         wd++;
                     } else {
-                        employeeData.addWorkSchedule(tmp, 0, emp.getId());
+                        employeeData.fillInTheSchedule(tmp, 0, emp.getId());
                         wd_index++;
                     }
                 } else if (vol == 1 && weekend_days[wd][1] == vol) {
-                    employeeData.addWorkSchedule(tmp, 1, emp.getId());
+                    employeeData.fillInTheSchedule(tmp, 1, emp.getId());
                     wd++;
                 } else {
-                    employeeData.addWorkSchedule(tmp, 0, emp.getId());
+                    employeeData.fillInTheSchedule(tmp, 0, emp.getId());
                     if (vol == 1) wd++;
                 }
 
@@ -64,10 +65,10 @@ public class WorkSchedule {
                 }
             } else {
                 if (weekend_days[wd][wd_index] == vol) {
-                    employeeData.addWorkSchedule(tmp, 1, emp.getId());
+                    employeeData.fillInTheSchedule(tmp, 1, emp.getId());
                     wd_index++;
                 } else {
-                    employeeData.addWorkSchedule(tmp, 0, emp.getId());
+                    employeeData.fillInTheSchedule(tmp, 0, emp.getId());
                 }
                 if (wd_index == 2) {
                     wd++;

@@ -18,8 +18,10 @@ public class WorkScheduleServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        employeeManagement = new EmployeeManagement();
         super.init(config);
+        employeeManagement = new EmployeeManagement();
+//        employeeManagement.getEmployeeSchedule();
+
     }
 
     @Override
@@ -29,7 +31,8 @@ public class WorkScheduleServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("employee_list", employeeManagement.getEmployeeList());
+        System.out.println("[INFO] WorkScheduleServletDoGet()");
+        req.setAttribute("work_schedule", employeeManagement.getEmployeeSchedule());
         getServletContext().getRequestDispatcher("/work_schedule.jsp").forward(req, resp);
         super.doGet(req, resp);
     }
