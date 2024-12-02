@@ -11,9 +11,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class EmployeeData {
     private volatile Connection connection;
     private volatile Statement statement;
-    private static volatile List<Employee> employeeList;
+    private volatile List<Employee> employeeList;
 
-    public synchronized List<Employee> getAllEmployees() {
+    public List<Employee> getAllEmployees() {
         employeeList = new CopyOnWriteArrayList<>();
         String SQL = "SELECT * FROM db_simple.employee;";
         try (ResultSet resultSet = getDBConnection().executeQuery(SQL)) {
@@ -33,7 +33,7 @@ public class EmployeeData {
         return employeeList;
     }
 
-    public synchronized Employee getEmployeeById(int id) {
+    public Employee getEmployeeById(int id) {
         Employee employee = null;
         String SQL = "select * from db_simple.employee where id = " + id + ";";
         try (ResultSet resultSet = getDBConnection().executeQuery(SQL)){
@@ -52,7 +52,7 @@ public class EmployeeData {
         return employee;
     }
 
-    public synchronized List<Employee> getAllWorkSchedule() {
+    public List<Employee> getAllWorkSchedule() {
         employeeList = getAllEmployees();
         for (Employee emp : employeeList) {
             String SQL = "select * from db_simple.date  \n" +
@@ -64,6 +64,7 @@ public class EmployeeData {
                     emp.setEmployeeWorkDays(resultSet.getDate("date").toLocalDate(),
                                             resultSet.getInt("flag"));
                 }
+                closeConnection();
             } catch (SQLException sql) {
                 closeConnection();
                 throw new RuntimeException(sql);
@@ -72,7 +73,7 @@ public class EmployeeData {
         return employeeList;
     }
 
-    public synchronized Employee getWorkScheduleById(int id) {
+    public Employee getWorkScheduleById(int id) {
         Employee employee = getEmployeeById(id);
         String SQL = "SELECT * FROM db_simple.date where employee_id = " + id + " and date between '2024-11-01' and '2024-11-30' order by date;";
         try (ResultSet resultSet = getDBConnection().executeQuery(SQL)) {
@@ -89,7 +90,8 @@ public class EmployeeData {
     }
 
     public synchronized void addNewEmployee(Employee employee) {
-        String SQL = "INSERT INTO db_simple.employee (shift, first_name, last_name, patronymic_name) VALUES (" + employee.getShift() + ", " +
+        String SQL = "INSERT INTO db_simple.employee (shift, first_name, last_name, patronymic_name) VALUES (" +
+                employee.getShift() + ", " +
                 employee.getFirstName() + ", " +
                 employee.getLustName() + ", " +
                 employee.getPatronymicName() + ");";
@@ -118,7 +120,7 @@ public class EmployeeData {
         }
     }
 
-    public void updateWorkSchedule() {
+    public synchronized void updateWorkSchedule() {
         int year = LocalDate.now().getYear() + 1;
         WorkSchedule workSchedule = new WorkSchedule(LocalDate.of(year, 1, 1));
         workSchedule.getWorkSchedule(this);

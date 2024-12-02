@@ -22,6 +22,13 @@
                 </tr>
                 <tr>
                     <td>
+                        <form method"post" action="/simple/editing_data">
+                            <button type="submit">Добавить сотрудника</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         <form method"post" action="/simple/work_schedule">
                             <button type="submit">Расписание на месяц</button>
                         </form>
