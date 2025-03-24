@@ -3,18 +3,17 @@ package dao;
 import model.Employee;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class EmployeeDB {
-    private CopyOnWriteArrayList <Employee> allDrivers;
+    private CopyOnWriteArrayList <Employee> allEmployees;
     private Connection connection;
     private Statement statement;
 
-    public CopyOnWriteArrayList<Employee> getAllDrivers() {
-        allDrivers = new CopyOnWriteArrayList<>();
+    public CopyOnWriteArrayList<Employee> getAllEmployees() {
+        allEmployees = new CopyOnWriteArrayList<>();
         String SQL = "SELECT drv.id_driver, drv.last_name, drv.first_name, drv.father_name, drv.shift, pos.position_name, dep.department_name " +
                 "FROM db_simple.drivers drv " +
                 "INNER JOIN db_simple.positions pos " +
@@ -26,7 +25,7 @@ public class EmployeeDB {
                 "drv.last_name ASC;";
         try (ResultSet resultSet = getJDBC().executeQuery(SQL)) {
             while (resultSet.next()) {
-                allDrivers.add(new Employee(
+                allEmployees.add(new Employee(
                         resultSet.getString("department_name"),
                         resultSet.getString("position_name"),
                         resultSet.getString("first_name"),
@@ -40,12 +39,12 @@ public class EmployeeDB {
         } catch (SQLException sql_err) {
             System.out.println("[15] " + sql_err.getMessage());
         }
-        return allDrivers;
+        return allEmployees;
     }
 
 
     public Statement getJDBC() {
-        allDrivers = new CopyOnWriteArrayList();
+        allEmployees = new CopyOnWriteArrayList();
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(
