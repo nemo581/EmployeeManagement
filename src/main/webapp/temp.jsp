@@ -5,7 +5,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>INDEX-JSP</title>
+        <title>temp-jsp</title>
     </head>
     <body>
         <table>
@@ -16,14 +16,14 @@
                 <tr>
                     <td>
                         <form method"post" action="/simple/employees_list">
-                            <button type="submit">Список всех сотрудников</button>
+                            <button type="submit">Список сотрудников</button>
                         </form>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <form method"post" action="/simple/editing_data">
-                            <button type="submit">Добавить нового сотрудника</button>
+                            <button type="submit">Добавить сотрудника</button>
                         </form>
                     </td>
                 </tr>
