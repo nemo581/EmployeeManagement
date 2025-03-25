@@ -1,7 +1,8 @@
 package servlets;
 
-import main.EmployeeManager;
+import management.EmployeeManager;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,16 +12,15 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@WebServlet(urlPatterns = {"/employees_list"})
+@WebServlet(urlPatterns = {"/employees"})
 public class EmployeeListServlet  extends HttpServlet {
-
     private EmployeeManager empManager;
 
     @Override
-    public void init() throws ServletException {
+    public void init(ServletConfig config) throws ServletException {
         empManager = new EmployeeManager();
         System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss:SSS")) + " " + this.getClass());
-        super.init();
+        super.init(config);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class EmployeeListServlet  extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute("employee_list", empManager.getAllEmployees());
-        getServletContext().getRequestDispatcher("/temp.jsp").forward(req, resp);
+        getServletContext().getRequestDispatcher("/employee_list.jsp").forward(req, resp);
         super.doGet(req, resp);
     }
 

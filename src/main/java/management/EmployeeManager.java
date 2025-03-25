@@ -1,4 +1,4 @@
-package main;
+package management;
 
 import dao.EmployeeDB;
 import model.Employee;

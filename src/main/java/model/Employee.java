@@ -14,7 +14,8 @@ public class Employee {
     private String lastName;
     private String fatherName;
     private LocalDate dayOfBirth;
-    private String[] phoneNumbers;
+    private String[][] phoneNumbers;
+    private String email;
     private String serviceNumber;
     private String shift;
     private int id;
@@ -42,7 +43,7 @@ public class Employee {
 
     public Employee(String department, String position, String firstName,
                     String lastName, String fatherName, LocalDate dayOfBirth,
-                    String[] phoneNumbers, String serviceNumber, String shift) {
+                    String[][] phoneNumbers, String serviceNumber, String shift) {
         this.department = department;
         this.position = position;
         this.firstName = firstName;
@@ -56,7 +57,7 @@ public class Employee {
 
     public Employee(String department, String position, String firstName,
                     String lastName, String fatherName, LocalDate dayOfBirth,
-                    String[] phoneNumbers) {
+                    String[][] phoneNumbers) {
         this.department = department;
         this.position = position;
         this.firstName = firstName;
@@ -69,7 +70,7 @@ public class Employee {
 
 //    public Employee(String department, String position, String firstName,
 //                    String lastName, String fatherName, LocalDate dayOfBirth,
-//                    String[] phoneNumbers, String serviceNumber) {
+//                    String[][] phoneNumbers, String serviceNumber) {
 //        this.department = department;
 //        this.position = position;
 //        this.firstName = firstName;
@@ -112,8 +113,11 @@ public class Employee {
     public void setDayOfBirth(LocalDate dayOfBirth) {
         this.dayOfBirth = dayOfBirth;
     }
-    public void setPhoneNumbers(String[] phoneNumbers) {
+    public void setPhoneNumbers(String[][] phoneNumbers) {
         this.phoneNumbers = phoneNumbers;
+    }
+    public void setEmail(String email) {
+        this.email = email;
     }
     public void setServiceNumber(String serviceNumber) {
         this.serviceNumber = serviceNumber;
@@ -143,8 +147,11 @@ public class Employee {
     public LocalDate getDayOfBirth() {
         return dayOfBirth;
     }
-    public String[] getPhoneNumbers() {
+    public String[][] getPhoneNumbers() {
         return phoneNumbers;
+    }
+    public String getEmail() {
+        return email;
     }
     public String getServiceNumber() {
         return serviceNumber;
