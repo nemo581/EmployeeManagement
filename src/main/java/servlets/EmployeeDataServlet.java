@@ -1,5 +1,7 @@
 package servlets;
 
+import management.EmployeeManager;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -7,12 +9,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/employee_data"})
 public class EmployeeDataServlet extends HttpServlet {
+    EmployeeManager employeeManager;
+
     @Override
     public void init(ServletConfig config) throws ServletException {
+        employeeManager = new EmployeeManager();
         super.init(config);
         log("Method init");
     }
@@ -26,17 +33,28 @@ public class EmployeeDataServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String uri = req.getRequestURI();
-        String params = formatParams(req);
-        resp.getWriter().write("Method doGet\nURI: " + uri + "\nParams:\n" + params + "\n");
+        if (req.getParameterMap().entrySet().size() == 1) {
+            for (Map.Entry<String, String[]> entry : req.getParameterMap().entrySet()) {
+                req.setAttribute("employee",
+                        employeeManager.getEmployeeById(Integer.parseInt(entry.getValue()[0])));
+                getServletContext().getRequestDispatcher("/employee_data.jsp").forward(req, resp);
+            }
+        }
+
+//        getEmployeeById()
+
+
+//        String uri = req.getRequestURI();
+//        String params = formatParams(req);
+//        resp.getWriter().write("Method doGet\nURI: " + uri + "\nParams:\n" + params + "\n");
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String uri = req.getRequestURI();
         String params = formatParams(req);
-        resp.getWriter().write("Method doGet\nURI: " + uri + "\nParams:\n" + params + "\n");
-//        super.doPost(req, resp);
+        resp.getWriter().write("Method doPost\nURI: " + uri + "\nParams:\n" + params + "\n");
+        super.doPost(req, resp);
     }
 
     @Override

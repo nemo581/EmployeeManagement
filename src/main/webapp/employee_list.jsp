@@ -23,7 +23,7 @@
             </tr>    
             <% for (Employee employee : employee_list) { %> 
                 <tr>
-                    <td><% out.print(employee.getId()); %></td> 
+                    <th><% out.print(employee.getId()); %></th> 
                     <td>
                         <a href="/simple/employee_data?id=<%= employee.getId() %>" style="color: black;"><% out.print(employee.getLastName() + " " + employee.getFirstName() + " " + employee.getFatherName()); %></a>
                     </td> 
