@@ -1,0 +1,123 @@
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 30px;
+    line-height: 1.5;
+    font-size: 12px;
+}
+
+.container {
+    max-width: 1920px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.container table {
+    table-layout: fixed;
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+}
+
+.table-wrapper {
+    /* ограничение высоты — подберите под себя */
+    max-height: clamp(500px, 75dvh, 90dvh);
+    /* или более жёстко: max-height: calc(100dvh - 180px); */
+    
+    overflow-y: auto;          /* вертикальный скролл */
+    overflow-x: auto;          /* горизонтальный, если таблица шире */
+
+    /* полезно на iOS */
+    -webkit-overflow-scrolling: touch;
+    transform: translateZ(0);
+}
+
+
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 8px 12px;
+}
+td {
+    vertical-align: top;
+}
+
+.employee-list-table th:nth-child(1),  /* ID */
+.employee-list-table td:nth-child(1)   { width: 15px; 
+                                         text-align: center;
+                                       }
+.employee-list-table th:nth-child(2),  /* ФИО */
+.employee-list-table td:nth-child(2)   { width: 250px; }
+
+.employee-list-table th:nth-child(3),  /* shift */
+.employee-list-table td:nth-child(3)   { width: 18px;
+                                         text-align: center;
+                                       }
+
+.employee-list-table th:nth-child(4),  /* tab_numb */
+.employee-list-table td:nth-child(4)   { width: 70px; }
+
+.employee-list-table th:nth-child(5),  /* department */
+.employee-list-table td:nth-child(5)   { width: 150px; }
+
+.employee-list-table th:nth-child(6),  /* Position */
+.employee-list-table td:nth-child(6)   { width: 100px; }
+
+
+
+.employee-list-table th:nth-child(7),  /* birthday */
+.employee-list-table td:nth-child(7)   { width: 80px; }
+
+.employee-list-table th:nth-child(8),  /* photo */
+.employee-list-table td:nth-child(8)   { width: 18px; }
+
+.employee-list-table th:nth-child(9),  /* email */
+.employee-list-table td:nth-child(9)   { width: 180px; }
+
+.employee-list-table th:nth-child(10),  /* phone */
+.employee-list-table td:nth-child(10)   { width: 100px; }
+
+.employee-list-table th:nth-child(11),  /* hireDate */
+.employee-list-table td:nth-child(11)   { width: 80px; }
+
+.employee-list-table th:nth-child(12),  /* terminationDate */
+.employee-list-table td:nth-child(12)   { width: 80px; }
+
+.employee-list-table th:nth-child(13),  /* created */
+.employee-list-table td:nth-child(13)   { width: 140px; }
+
+.employee-list-table th:nth-child(14),  /* updated */
+.employee-list-table td:nth-child(14)   { width: 140px; }
+
+.employee-list-table th:nth-child(15),  /* active */
+.employee-list-table td:nth-child(15)   { width: 40px; }
+
+.employee-list-table th:nth-child(16),  /* deleted */
+.employee-list-table td:nth-child(16)   { width: 40px; }
+
+
+.schedule-table th:nth-child(1),  /* ID */
+.schedule-table td:nth-child(1)   { width: 15px; 
+                                    text-align: center;
+                                  }
+
+.schedule-table th:nth-child(2),  /* ФИО */
+.schedule-table td:nth-child(2)   { width: 250px; }
+
+.schedule-table th:nth-child(3),  /* shift */
+.schedule-table td:nth-child(3)   { width: 18px; 
+                                    text-align: center;
+                                  }
+
+.schedule-table th:nth-child(n+4),
+.schedule-table td:nth-child(n+4) { width: 10px;
+                                    min-width: 10px;
+                                    max-width: 10px;
+                                    text-align: center;
+                                  }

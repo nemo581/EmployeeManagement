@@ -82,8 +82,9 @@
             Добро пожаловать в систему управления персоналом<br>
             Доступ разрешён • 2026
         </div>
-
+        <a href="${pageContext.request.contextPath}/test">тест</a>
         <a href="${pageContext.request.contextPath}/all_employees" class="btn">Список сотрудников</a>
+        <a href="${pageContext.request.contextPath}/employees_schedule" class="btn">График работы</a>
         <a href="${pageContext.request.contextPath}/add_employee" class="btn">Добавить сотрудника</a>
         <a href="${pageContext.request.contextPath}/department_management" class="btn">Управление департаментами и должностями</a>
     </div>
