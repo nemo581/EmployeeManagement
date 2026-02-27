@@ -23,6 +23,7 @@ public class AllEmployeesServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute("employees", employeeList);
+
         req.getRequestDispatcher("/WEB-INF/jsp/all_employees.jsp").forward(req, resp);
     }
 }

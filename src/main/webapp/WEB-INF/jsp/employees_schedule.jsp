@@ -36,7 +36,8 @@
                             <tr>
                                 <td class="employee-info"><strong>${emp.employeeId}</strong></td>
                                 <td class="employee-info">
-                                    <a href="${pageContext.request.contextPath}/employee/${emp.employeeId}" class="employee-link">
+                                    <c:url var="employeeUrl" value="/employee/${emp.employeeId}" />
+                                    <a href="${employeeUrl}" class="employee-link">
                                         <strong>${emp.fullName}</strong>
                                     </a>
                                 </td>

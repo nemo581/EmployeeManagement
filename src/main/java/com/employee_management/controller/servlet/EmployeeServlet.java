@@ -14,10 +14,11 @@ public class EmployeeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println("employee servlet");
         String pathInfo = req.getPathInfo();
-        System.out.println(pathInfo);
+        System.out.println("pathInfo = " + pathInfo);
         if (pathInfo != null && pathInfo.length() > 1) {
             String idStr = pathInfo.substring(1);
             int id = Integer.parseInt(idStr);
+            System.out.println("id = " + id);
         }
         req.getRequestDispatcher("/WEB-INF/jsp/employee.jsp").forward(req, resp);
     }

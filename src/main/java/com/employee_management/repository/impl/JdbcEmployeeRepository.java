@@ -14,7 +14,7 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
     @Override
     public List<Employee> findAllEmployee() {
         List<Employee> employee_list = new ArrayList<>();
-        String sql = SqlQuery.GET_ALL_EMPLOYEES_TEST.getQuery();
+        String sql = SqlQuery.GET_ALL_EMPLOYEES.getQuery();
         Connection connection = DbConnection.getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
              ResultSet rs = preparedStatement.executeQuery()) {
