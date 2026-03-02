@@ -140,9 +140,9 @@
 
                 <div class="employee-main-info">
                     <h1 class="employee-name">ФИО: ${employee.fullName}</h1>
-                    <div class="employee-position">Позиция:${employee.position}</div>
+                    <div class="employee-position">Позиция: ${employee.position != null ? employee.position : '—'}</div>
                     <div class="employee-department-shift">
-                        Департамент: ${employee.department} • Смена: ${employee.shift}
+                        Департамент: ${employee.department != null ? employee.department : 'null'} • Смена: ${employee.shift != null ? employee.shift : 'null'}
                     </div>
                 </div>
             </div>
@@ -150,15 +150,15 @@
             <div class="employee-grid">
                 <div class="detail-row">
                     <div class="detail-label">ID</div>
-                    <div class="detail-value"><strong>${employee.employeeId}</strong></div>
+                    <div class="detail-value"><strong>${employee.employeeId != null ? employee.employeeId : 'null'}</strong></div>
                 </div>
                 <div class="detail-row">
                     <div class="detail-label">Табельный номер</div>
-                    <div class="detail-value">${employee.tabNumber}</div>
+                    <div class="detail-value">${employee.tabNumber != null ? employee.tubNumber : 'null'}</div>
                 </div>
                 <div class="detail-row">
                     <div class="detail-label">Дата рождения</div>
-                    <div class="detail-value">${employee.birthDate}</div>
+                    <div class="detail-value">${employee.birthDate != null ? employee.birtDate : 'null'}</div>
                 </div>
                 <div class="detail-row">
                     <div class="detail-label">Email</div>
@@ -174,18 +174,18 @@
                 </div>
                 <div class="detail-row">
                     <div class="detail-label">Телефон</div>
-                    <div class="detail-value">${employee.phone}</div>
+                    <div class="detail-value">${employee.phone != null ? employee.phone : 'null'}</div>
                 </div>
                 <div class="detail-row">
                     <div class="detail-label">Стаж работы</div>
-                    <div class="detail-value">${employee.hireDate}</div>
+                    <div class="detail-value">${employee.hireDate != null ? employee.hireDate : 'null'}</div>
                 </div>
                 <div class="detail-row">
                     <div class="detail-label">Договор расторгнут</div>
                     <div class="detail-value">
                         <c:choose>
                             <c:when test="${not empty employee.terminationDate}">
-                                <span class="status-terminated">${employee.terminationDate}</span>
+                                <span class="status-terminated">${employee.terminationDate != null ? employee.terminationDate : 'null'}</span>
                             </c:when>
                             <c:otherwise>—</c:otherwise>
                         </c:choose>

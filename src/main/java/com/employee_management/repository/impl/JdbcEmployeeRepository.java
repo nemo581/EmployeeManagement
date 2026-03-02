@@ -1,8 +1,8 @@
 package com.employee_management.repository.impl;
 
+import com.employee_management.model.*;
 import com.employee_management.repository.EmployeeRepository;
 import com.employee_management.repository.query.SqlQuery;
-import com.employee_management.model.*;
 import com.employee_management.util.connection.DbConnection;
 
 import java.sql.*;
@@ -63,7 +63,25 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
 
     @Override
     public Employee findEmployeeById(int id) {
-        return null;
+        Employee employee = null;
+        String sql = SqlQuery.GET_EMPLOYEE_BY_ID.getQuery();
+        Connection connection = DbConnection.getConnection();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setLong(1, id);
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                while (rs.next()) {
+                    employee = new Employee(rs.getString("first_name"),
+                            rs.getString("last_name"),
+                            rs.getString("middle_name"));
+                    employee.setEmployeeId(id);
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+        return employee;
     }
 
     @Override

@@ -107,7 +107,7 @@ public class Employee {
     }
 
     public String getDepartment() {
-        return department.getName();
+        return department != null ? department.getName() : "null";
     }
 
     public void setDepartment(Department department) {
@@ -115,7 +115,7 @@ public class Employee {
     }
 
     public String getPosition() {
-        return position.getName();
+        return position != null ? position.getName() : "null";
     }
 
     public void setPosition(Position position) {
