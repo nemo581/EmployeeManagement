@@ -6,6 +6,8 @@ import com.employee_management.repository.query.SqlQuery;
 import com.employee_management.util.connection.DbConnection;
 
 import java.sql.*;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,25 +32,16 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
                 employee.setPosition(new Position(rs.getString("position_name")));
                 String shift = rs.getString("shift");
                 employee.setShift((shift != null && !shift.isEmpty()) ? shift : null);
-                employee.setBirthDate(Optional.ofNullable(rs.getDate("birth_date"))
-                        .map(java.sql.Date::toLocalDate)
-                        .orElse(null));
+                employee.setBirthDate(rs.getObject("birth_date", LocalDate.class));
                 employee.setPhotoPath(rs.getString("photo_path"));
-                employee.setHireDate(Optional.ofNullable(rs.getDate("hire_date"))
-                        .map(java.sql.Date::toLocalDate)
-                        .orElse(null));
-                employee.setTerminationDate(Optional.ofNullable(rs.getTimestamp("termination_date"))
-                        .map(Timestamp::toLocalDateTime)
-                        .orElse(null));
+                employee.setHireDate(rs.getObject("hire_date", LocalDate.class));
+                employee.setTerminationDate(rs.getObject("termination_date", LocalDateTime.class));
                 employee.setCreateAt(rs.getObject("created_at", LocalDateTime.class));
                 employee.setUpdatedAt(rs.getObject("updated_at", LocalDateTime.class));
                 employee.setActive(rs.getBoolean("is_active"));
-                employee.setDeletedAt(Optional.ofNullable(rs.getTimestamp("deleted_at"))
-                        .map(Timestamp::toLocalDateTime)
-                        .orElse(null));
+                employee.setDeletedAt(rs.getObject("deleted_at", LocalDateTime.class));
                 employee_list.add(employee);
             }
-            connection.close();
             findAllEmployeesWithContacts(employee_list);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
