@@ -134,8 +134,8 @@ public class Employee {
         return phone;
     }
 
-    public void setPhone(Phone phone) {
-        this.phone.add(phone);
+    public void setPhone(Phone empPhone) {
+        this.phone.add(empPhone);
     }
 
     public LocalDate getHireDate() {

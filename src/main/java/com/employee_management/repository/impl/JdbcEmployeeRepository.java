@@ -15,8 +15,8 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
     public List<Employee> findAllEmployee() {
         List<Employee> employee_list = new ArrayList<>();
         String sql = SqlQuery.GET_ALL_EMPLOYEES.getQuery();
-        Connection connection = DbConnection.getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        try (Connection connection = DbConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql);
              ResultSet rs = preparedStatement.executeQuery()) {
             while (rs.next()) {
                 Employee employee = new Employee(rs.getString("first_name"),
@@ -51,11 +51,6 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
             connection.close();
             findAllEmployeesWithContacts(employee_list);
         } catch (SQLException e) {
-            try {
-                connection.close();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
             System.out.println(e.getMessage());
         }
         return employee_list;
@@ -65,11 +60,11 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
     public Employee findEmployeeById(int id) {
         Employee employee = null;
         String sql = SqlQuery.GET_EMPLOYEE_BY_ID.getQuery();
-        Connection connection = DbConnection.getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = DbConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             try (ResultSet rs = preparedStatement.executeQuery()) {
-                while (rs.next()) {
+                if (rs.next()) {
                     employee = new Employee(rs.getString("first_name"),
                             rs.getString("last_name"),
                             rs.getString("middle_name"));
@@ -81,7 +76,72 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
+
+        if (employee != null) {
+            List<Phone> employeePhones = findPhoneByEmployeeId(id);
+            for (Phone phone : employeePhones) {
+                employee.setPhone(phone);
+            }
+            List<Email> employeeEmails = findEmailByEmployeeId(id);
+            for (Email email : employeeEmails) {
+                employee.setEmail(email);
+            }
+        }
         return employee;
+    }
+    @Override
+    public List<Phone> findPhoneByEmployeeId(int employeeId) {
+        List<Phone> employeePhones = new ArrayList<>();
+        String sql = SqlQuery.GET_PHONE_BY_EMPLOYEE_ID.getQuery();
+        try (Connection connection = DbConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, employeeId);
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                while (rs.next()) {
+                    Phone employeePhone = new Phone();
+                    employeePhone.setId(rs.getInt("id"));
+                    employeePhone.setPhone(rs.getString("phone"));
+                    employeePhone.setContactType(ContactType.fromTitle(rs.getString("type")));
+                    employeePhone.setMain(rs.getBoolean("is_main"));
+                    employeePhone.setActive(rs.getBoolean("is_active"));
+                    employeePhone.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
+                    employeePhone.setUpdatedAt(rs.getObject("updated_at", LocalDateTime.class));
+                    employeePhone.setDeletedAt(rs.getObject("deleted_at", LocalDateTime.class));
+                    employeePhone.setEmployeeId(rs.getInt("employee_id"));
+                    employeePhones.add(employeePhone);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return employeePhones;
+    }
+
+    @Override
+    public List<Email> findEmailByEmployeeId(int employeeId) {
+        List<Email> employeeEmails = new ArrayList<>();
+        String sql = SqlQuery.GET_EMAIL_BY_EMPLOYEE_ID.getQuery();
+        try (Connection connection = DbConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, employeeId);
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                while (rs.next()) {
+                    Email employeeEmail = new Email();
+                    employeeEmail.setId(rs.getInt("id"));
+                    employeeEmail.setEmail(rs.getString("email"));
+                    employeeEmail.setMain(rs.getBoolean("is_main"));
+                    employeeEmail.setContactType(ContactType.fromTitle(rs.getString("type")));
+                    employeeEmail.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
+                    employeeEmail.setUpdatedAt(rs.getObject("updated_at", LocalDateTime.class));
+                    employeeEmail.setDeletedAt(rs.getObject("deleted_at", LocalDateTime.class));
+                    employeeEmail.setEmployeeId(rs.getInt("employee_id"));
+                    employeeEmails.add(employeeEmail);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return employeeEmails;
     }
 
     @Override
@@ -93,15 +153,13 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
         String placeholder = String.join(",",
                 Collections.nCopies(ids.size(), "?"));
         String sql = SqlQuery.GET_ALL_EMPLOYEES_CONTACT.getQuery().formatted(placeholder, placeholder);
-
-        Connection connection = DbConnection.getConnection();
-        try(PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = DbConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             int paramIndex = 1;
+            for (Integer id : ids) preparedStatement.setInt(paramIndex++, id);
+            for (Integer id : ids) preparedStatement.setInt(paramIndex++, id);
 
-            for(Integer id : ids)preparedStatement.setInt(paramIndex++, id);
-            for(Integer id : ids) preparedStatement.setInt(paramIndex++, id);
-
-            try(ResultSet rs = preparedStatement.executeQuery()) {
+            try (ResultSet rs = preparedStatement.executeQuery()) {
                 while (rs.next()) {
                     Integer employeeId = rs.getInt("employee_id");
                     String source = rs.getString("source");
@@ -126,11 +184,6 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
                 }
             }
         } catch (SQLException e) {
-            try {
-                connection.close();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
             System.out.println(e.getMessage());
         }
     }

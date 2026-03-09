@@ -91,6 +91,17 @@ public enum SqlQuery {
             AND e.deleted_at IS NULL
             AND e.is_active = 1;"""),
 
+    GET_EMAIL_BY_EMPLOYEE_ID("""
+            SELECT id, email, is_main, is_active, type, created_at, updated_at, deleted_at, employee_id
+            FROM employee_email
+            WHERE employee_id = ? AND is_active = 1;
+            """),
+    GET_PHONE_BY_EMPLOYEE_ID("""
+            SELECT id, phone, type, is_main, is_active, created_at, updated_at, deleted_at, employee_id
+            FROM employee_phone
+            WHERE employee_id = ? AND is_active = 1;
+            """),
+
     GET_ALL_EMPLOYEES_CONTACT("""
             SELECT\s
                 'phone' AS source,
