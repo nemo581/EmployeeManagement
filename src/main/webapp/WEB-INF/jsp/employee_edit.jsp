@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Карточка — ${employee.fullName}</title>
+    <title>Рдактирование — ${employee.fullName}</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/style.css">
     <style>
         .employee-card {
@@ -103,6 +103,14 @@
             line-height: 1.45;
         }
 
+        .detail-value input {
+            width: 80%;        /* Занимает всю ширину родительского блока */
+            box-sizing: border-box; /* Учитывает внутренние отступы в ширине */
+            padding: 4px 8px;   /* Чтобы текст не прилипал к краям */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
         .status-active  { color: #28a745; font-weight: 600; }
         .status-inactive{ color: #dc3545; font-weight: 600; }
         .status-terminated { color: #6c757d; font-style: italic; }
@@ -140,13 +148,53 @@
 
                 <div class="employee-main-info">
                     <h1 class="employee-name">ФИО: ${employee.fullName}</h1>
-                    <c:url var="employeeUrl" value="/employee/edit?id=${employee.employeeId}"/>
-                    <a href="${employeeUrl}" class="employee-link">
-                        <strong>✏️ >>Редактировать<<</strong>
-                    </a>
-                    <div class="employee-position">Позиция: ${employee.position != null ? employee.position : '—'}</div>
+                    <div class="employee-position">Позиция: 
+                        <c:choose>
+                        <c:when test="${param.edit eq 'true'}">
+                            <select name="position">
+                                <option value="">Не указано</option>
+                                <!-- Здесь можно вывести список из сервлета или статически -->
+                                <option value="Менеджер" ${employee.position == 'Менеджер' ? 'selected' : ''}>Менеджер</option>
+                                <option value="Разработчик" ${employee.position == 'Разработчик' ? 'selected' : ''}>Разработчик</option>
+                                <option value="Аналитик" ${employee.position == 'Аналитик' ? 'selected' : ''}>Аналитик</option>
+                                <!-- добавь остальные -->
+                            </select>
+                        </c:when>
+                        <c:otherwise>
+                            ${employee.position != null ? employee.position : 'Не указано'}
+                        </c:otherwise>
+                    </c:choose>
+                    </div>
                     <div class="employee-department-shift">
-                        Департамент: ${employee.department != null ? employee.department : 'null'} • Смена: ${employee.shift != null ? employee.shift : 'null'}
+                        Департамент: 
+                        <c:choose>
+                        <c:when test="${param.edit eq 'true'}">
+                            <select name="department">
+                                <option value="">Не указано</option>
+                                <!-- Аналогично — список департаментов -->
+                                <option value="Продажи" ${employee.department == 'Продажи' ? 'selected' : ''}>Продажи</option>
+                                <option value="Разработка" ${employee.department == 'Разработка' ? 'selected' : ''}>Разработка</option>
+                                <!-- добавь остальные -->
+                            </select>
+                        </c:when>
+                        <c:otherwise>
+                            ${employee.department != null ? employee.department : 'Не указано'}
+                        </c:otherwise>
+                    </c:choose>
+                    • Смена:
+                    <c:choose>
+                        <c:when test="${param.edit eq 'true'}">
+                            <select name="shift">
+                                <option value="">Не указано</option>
+                                <option value="1" ${employee.shift == '1' ? 'selected' : ''}>1</option>
+                                <option value="2" ${employee.shift == '2' ? 'selected' : ''}>2</option>
+                                <option value="3" ${employee.shift == '3' ? 'selected' : ''}>3</option>
+                            </select>
+                        </c:when>
+                        <c:otherwise>
+                            ${employee.shift != null ? employee.shift : 'Не указано'}
+                        </c:otherwise>
+                    </c:choose>
                     </div>
                 </div>
             </div>
@@ -158,7 +206,17 @@
                 </div>
                 <div class="detail-row">
                     <div class="detail-label">Табельный номер</div>
-                    <div class="detail-value">${employee.tabNumber != null ? employee.tabNumber : 'null'}</div>
+                    <div class="detail-value">
+                         <c:choose>
+                            <c:when test="${param.edit eq 'true'}">
+                                <input type="text" name="tabNumber" value="${employee.tabNumber}" 
+                                placeholder="не указано">
+                            </c:when>
+                            <c:otherwise>
+                                ${not empty employee.tabNumber ? employee.tabNumber : 'не указано'}
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
                 </div>
                 <div class="detail-row">
                     <div class="detail-label">Дата рождения</div>

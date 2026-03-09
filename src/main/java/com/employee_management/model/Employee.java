@@ -191,11 +191,21 @@ public class Employee {
         return "\u001B[36m" + "Employee{" +
                 "employee_id='" + employeeId + '\'' +
                 ", tab_number='" + tabNumber + '\'' +
+                ", department='" + department + '\'' +
+                ", position='" + position + '\'' +
                 ", shift='" + shift + '\'' +
                 ", first_name='" + firstName + '\'' +
                 ", last_name='" + lastName + '\'' +
                 ", middle_name='" + middleName + '\'' +
                 ", birth_date='" + birthDate + '\'' +
+                ", photo='" + (photoPath == null ? photoPath : "Ok") + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", hireDate='" + hireDate + '\'' +
+                ", terminationDate='" + terminationDate + '\'' +
+                ", createdAt='" + createAt + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
+                ", deletedAt='" + deletedAt + '\'' +
                 ", is_active='" + isActive + '\'' +
                 '}' + "\u001B[0m";
     }

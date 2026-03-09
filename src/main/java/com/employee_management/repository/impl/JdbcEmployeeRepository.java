@@ -43,6 +43,9 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
                 employee_list.add(employee);
             }
             findAllEmployeesWithContacts(employee_list);
+            for (Employee empl : employee_list) {
+                System.out.println(empl);
+            }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -58,10 +61,26 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
             preparedStatement.setLong(1, id);
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 if (rs.next()) {
-                    employee = new Employee(rs.getString("first_name"),
-                            rs.getString("last_name"),
-                            rs.getString("middle_name"));
-                    employee.setEmployeeId(id);
+//                    employee = new Employee(rs.getString("first_name"),
+//                            rs.getString("last_name"),
+//                            rs.getString("middle_name"));
+//                    employee.setEmployeeId(id);
+                    employee = new Employee();
+                    employee.setEmployeeId(rs.getInt("employee_id"));
+                    employee.setTabNumber(rs.getString("tab_number"));
+                    employee.setFirstName(rs.getString("first_name"));
+                    employee.setLastName(rs.getString("last_name"));
+                    employee.setMiddleName(rs.getString("middle_name"));
+                    employee.setBirthDate(rs.getObject("birth_date", LocalDate.class));
+                    employee.setPhotoPath(rs.getString("photo_path"));
+                    employee.setShift(rs.getString("shift"));
+                    employee.setHireDate(rs.getObject("hire_date", LocalDate.class));
+                    employee.setTerminationDate(rs.getObject("termination_date", LocalDateTime.class));
+                    employee.setCreateAt(rs.getObject("created_at", LocalDateTime.class));
+                    employee.setUpdatedAt(rs.getObject("updated_at", LocalDateTime.class));
+                    employee.setActive(rs.getBoolean("is_active"));
+                    employee.setDeletedAt(rs.getObject("deleted_at", LocalDateTime.class));
+
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -80,6 +99,7 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
                 employee.setEmail(email);
             }
         }
+        System.out.println(">>" + employee);
         return employee;
     }
     @Override
