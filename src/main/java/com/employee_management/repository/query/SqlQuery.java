@@ -68,7 +68,6 @@ public enum SqlQuery {
             e.is_active,
             e.deleted_at,
 
-            -- текущее назначение
             curr_dep.id            AS current_department_id,
             curr_dep.name          AS current_department_name,
             curr_pos.id            AS current_position_id,
@@ -89,7 +88,7 @@ public enum SqlQuery {
             LEFT JOIN positions curr_pos
             ON curr_pos.id = curr_assign.position_id
 
-            WHERE e.employee_id = ?          -- ← ваш ID
+            WHERE e.employee_id = ?
             AND e.deleted_at IS NULL
             AND e.is_active = 1;"""),
 
@@ -129,7 +128,7 @@ public enum SqlQuery {
                     is_main,
                     is_active
                 FROM employee_phone
-                WHERE employee_id = %s
+                WHERE employee_id = ?
                   AND is_active = 1
                   AND deleted_at IS NULL
             
@@ -143,7 +142,7 @@ public enum SqlQuery {
                     is_main,
                     is_active
                 FROM employee_email
-                WHERE employee_id = %s
+                WHERE employee_id = ?
                   AND is_active = 1
                   AND deleted_at IS NULL
             

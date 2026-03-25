@@ -10,7 +10,7 @@ public class EmployeeService {
     public static List<Employee> getAllEmployees() {
         return employeeRepository.findAllEmployees();
     }
-    public static Employee getEmployeeById(int id) {
+    public static Employee getEmployeeById(Integer id) {
         return employeeRepository.findEmployeeById(id);
     }
 }

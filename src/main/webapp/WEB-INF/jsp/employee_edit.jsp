@@ -92,7 +92,7 @@
 <div class="container" style="padding-top: 0;">
     <a href="${pageContext.request.contextPath}/" class="back-link">← Вернуться к списку</a>
 
-    <form action="${pageContext.request.contextPath}/employee/save" method="post">
+    <form action="${pageContext.request.contextPath}/employee" method="post">
         <input type="hidden" name="employeeId" value="${employee.employeeId}">
         
         <div class="employee-card">
@@ -126,7 +126,7 @@
                         <%--</c:choose>--%>
                     </div>
                     <div class="employee-position-shift">
-                        Позиция: 
+                        Должность: 
                         <%--<c:choose>--%>
                             <%--<c:when test="${param.edit eq 'true'}">--%>
                                 <select name="position">
@@ -140,12 +140,13 @@
                         <%--</c:choose>--%>
                         • Смена:
                         <c:choose>
-                            <c:when test="${param.edit eq 'true'}">
+                            <c:when test="${edit eq 'true'}">
                                 <select name="shift">
                                     <option value="">Не указано</option>
                                     <option value="1" ${employee.shift == '1' ? 'selected' : ''}>1</option>
                                     <option value="2" ${employee.shift == '2' ? 'selected' : ''}>2</option>
                                     <option value="3" ${employee.shift == '3' ? 'selected' : ''}>3</option>
+                                    <option value="3" ${employee.shift == '2/2' ? 'selected' : ''}>2/2</option>
                                 </select>
                             </c:when>
                             <c:otherwise>${not empty employee.shift ? employee.shift : 'Не указано'}</c:otherwise>
@@ -164,7 +165,7 @@
                     <div class="detail-label">Табельный номер</div>
                     <div class="detail-value">
                         <c:choose>
-                            <c:when test="${param.edit eq 'true'}">
+                            <c:when test="${edit eq 'true'}">
                                 <input type="text" name="tabNumber" value="${employee.tabNumber}" placeholder="не указано">
                             </c:when>
                             <c:otherwise>${not empty employee.tabNumber ? employee.tabNumber : 'не указано'}</c:otherwise>
@@ -174,19 +175,33 @@
 
                 <div class="detail-row">
                     <div class="detail-label">Дата рождения</div>
-                    <div class="detail-value">${not empty employee.birthDate ? employee.birthDate : 'null'}</div>
+                    <div class="detail-value">
+                        <c:choose>
+                            <c:when test="${edit eq 'true'}">
+                                <input type="date" name="birthDate" value="${employee.birthDate}">
+                            </c:when>
+                            <c:otherwise>${employee.birthDate}</c:otherwise>
+                        </c:choose>
+                    </div>
                 </div>
 
                 <div class="detail-row">
                     <div class="detail-label">Email</div>
                     <div class="detail-value">
-                        <c:forEach items="${employee.email}" var="e" varStatus="loop">
-                            <c:choose>
-                                <c:when test="${e.main}"><strong>${e.email} (основной)</strong></c:when>
-                                <c:otherwise>${e.email}</c:otherwise>
-                            </c:choose>
-                            <c:if test="${!loop.last}">, </c:if>
-                        </c:forEach>
+                        <c:choose>
+                            <c:when test="${not empty employee.email}">
+                                <c:forEach items="${employee.email}" var="e" varStatus="loop">
+                                    <c:choose>
+                                        <c:when test="${e.main}"><strong>${e.email} (основной)</strong></c:when>
+                                        <c:otherwise>${e.email}</c:otherwise>
+                                    </c:choose>
+                                    <c:if test="${!loop.last}">, </c:if>
+                                </c:forEach>
+                            </c:when>
+                        <c:otherwise>
+                    <span class="text-muted">Email не указан</span>
+                    </c:otherwise>
+                    </c:choose>
                     </div>
                 </div>
 
@@ -245,7 +260,7 @@
                 </div>
             </div>
             
-            <c:if test="${param.edit eq 'true'}">
+            <c:if test="${edit eq 'true'}">
                 <button type="submit" class="save-btn">Сохранить изменения</button>
             </c:if>
         </div>
