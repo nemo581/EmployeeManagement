@@ -4,7 +4,7 @@ public enum SqlQuery {
     INSERT_MIN_EMPLOYEE_INFO("INSERT INTO employee (first_name, last_name, middle_name, shift) VALUES (?, ?, ?, ?);"),
 
     GET_ALL_EMPLOYEES("""
-            SELECT\s
+            SELECT
                 e.employee_id,
                 e.tab_number,
                 e.shift,
@@ -28,21 +28,21 @@ public enum SqlQuery {
                 ea.assignment_date,
                 ea.end_date
             FROM employee e
-            LEFT JOIN employee_assignments ea\s
-                ON e.employee_id = ea.employee_id\s
-                AND ea.is_current = 1\s
-                AND ea.is_active = 1\s
+            LEFT JOIN employee_assignments ea
+                ON e.employee_id = ea.employee_id
+                AND ea.is_current = 1
+                AND ea.is_active = 1
                 AND ea.deleted_at IS NULL
-            LEFT JOIN departments d\s
-                ON ea.department_id = d.id\s
-                AND d.is_active = 1\s
+            LEFT JOIN departments d
+                ON ea.department_id = d.id
+                AND d.is_active = 1
                 AND d.deleted_at IS NULL
-            LEFT JOIN positions p\s
+            LEFT JOIN positions p
                 ON ea.position_id = p.id
-            WHERE e.is_active = 1\s
+            WHERE e.is_active = 1
               AND e.deleted_at IS NULL
             ORDER BY e.last_name ASC,
-                     CASE\s
+                     CASE
                          WHEN e.shift = '1'   THEN 1
                          WHEN e.shift = '2'   THEN 2
                          WHEN e.shift = '1/2' THEN 3
@@ -91,17 +91,6 @@ public enum SqlQuery {
             AND e.deleted_at IS NULL
             AND e.is_active = 1;"""),
 
-    GET_EMAIL_BY_EMPLOYEE_ID("""
-            SELECT id, email, is_main, is_active, type, created_at, updated_at, deleted_at, employee_id
-            FROM employee_email
-            WHERE employee_id = ? AND is_active = 1;
-            """),
-    GET_PHONE_BY_EMPLOYEE_ID("""
-            SELECT id, phone, type, is_main, is_active, created_at, updated_at, deleted_at, employee_id
-            FROM employee_phone
-            WHERE employee_id = ? AND is_active = 1;
-            """),
-
     GET_ALL_EMPLOYEES_CONTACT("""
             SELECT\s
                 'phone' AS source,
@@ -111,8 +100,8 @@ public enum SqlQuery {
                 is_main,
                 is_active
             FROM employee_phone
-            WHERE employee_id IN (%s)\s
-              AND is_active = 1\s
+            WHERE employee_id IN (%s)
+              AND is_active = 1
               AND deleted_at IS NULL
 
             UNION ALL
@@ -125,11 +114,54 @@ public enum SqlQuery {
                 is_main,
                 is_active
             FROM employee_email
-            WHERE employee_id IN (%s)\s
-              AND is_active = 1\s
+            WHERE employee_id IN (%s)
+              AND is_active = 1
               AND deleted_at IS NULL;"""),
 
+    GET_EMPLOYEES_CONTACT_BY_ID("""
+            SELECT\s
+                    'phone' AS source,
+                    employee_id,
+                    phone AS value,
+                    type,
+                    is_main,
+                    is_active
+                FROM employee_phone
+                WHERE employee_id = %s
+                  AND is_active = 1
+                  AND deleted_at IS NULL
+            
+                UNION ALL
+            
+                SELECT\s
+                    'email' AS source,
+                    employee_id,
+                    email AS value,
+                    type,
+                    is_main,
+                    is_active
+                FROM employee_email
+                WHERE employee_id = %s
+                  AND is_active = 1
+                  AND deleted_at IS NULL
+            
+                ORDER BY source, is_main DESC, type;
+            """),
+
+    GET_EMAIL_BY_EMPLOYEE_ID("""
+            SELECT id, email, is_main, is_active, type, created_at, updated_at, deleted_at, employee_id
+            FROM employee_email
+            WHERE employee_id = ? AND is_active = 1;
+            """),
+    GET_PHONE_BY_EMPLOYEE_ID("""
+            SELECT id, phone, type, is_main, is_active, created_at, updated_at, deleted_at, employee_id
+            FROM employee_phone
+            WHERE employee_id = ? AND is_active = 1;
+            """),
+
     GET_DEPARTMENTS("SELECT id, name FROM departments WHERE is_active = 1 ORDER BY name"),
+
+    GET_POSITIONS("SELECT id, name FROM positions WHERE is_active = 1 ORDER BY name"),
 
     ADD_DEPARTMENT("INSERT INTO departments (name, is_active) VALUES (?, 1)"),
 

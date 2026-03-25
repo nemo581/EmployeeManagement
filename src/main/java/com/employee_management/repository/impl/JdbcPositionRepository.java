@@ -7,11 +7,31 @@ import com.employee_management.util.connection.DbConnection;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class JdbcPositionRepository implements PositionRepository {
     @Override
     public List<Position> getAllPositions() {
+        String sql = SqlQuery.GET_POSITIONS.getQuery();
+        List<Position> positions = new ArrayList<>();
+        try (Connection connection = DbConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+             while (resultSet.next()) {
+                 Position position = new Position();
+                 position.setId(resultSet.getInt("id"));
+                 position.setName(resultSet.getString("name"));
+                 positions.add(position);
+             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return positions;
+    }
+
+    @Override
+    public List<Position> getAllPositionByDepartmentId(int id) {
         return null;
     }
 

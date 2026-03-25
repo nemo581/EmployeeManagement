@@ -41,10 +41,14 @@
                 <tbody>
                     <c:forEach items="${employees}" var="emp">
                         <tr>
-                            <td class="employee-info"><strong>${emp.employeeId}</strong></td>
+                            <td class="employeeInfo"><strong>${emp.employeeId}</strong></td>
                             <td class="employee-info">
-                                <c:url var="employeeUrl" value="/employee/${emp.employeeId}" />
-                                <a href="${employeeUrl}" class="employee-link">
+                                <!--<c:url var="employeeUrl" value="/employee/${emp.employeeId}" /> -->
+                                <c:url var="empInfo" value="/employee">
+                                    <c:param name="id" value="${emp.employeeId}"/>
+                                    <c:param name="action" value="info"/>
+                                </c:url>
+                                <a href="${empInfo}" class="employee-link">
                                     <strong>${emp.fullName}</strong>
                                 </a>
                             </td>

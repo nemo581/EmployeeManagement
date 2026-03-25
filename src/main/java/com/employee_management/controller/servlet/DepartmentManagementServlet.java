@@ -8,6 +8,7 @@ import com.employee_management.repository.PositionRepository;
 import com.employee_management.repository.impl.JdbcDepartmentRepository;
 import com.employee_management.repository.impl.JdbcPositionDepartmentRepository;
 import com.employee_management.repository.impl.JdbcPositionRepository;
+import com.employee_management.service.DepartmentService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -83,7 +84,7 @@ public class DepartmentManagementServlet extends HttpServlet {
             }
             String name = department.getName().trim();
             log("Add department: " + name);
-            int id = departmentRepository.addDepartment(name);
+            int id = DepartmentService.addDepartment(department);
             System.out.println( "[" + LocalTime.now() + "] department: " + department);
             sendSuccessResponse(resp, "id", id, "name", name);
         } catch (IOException e) {

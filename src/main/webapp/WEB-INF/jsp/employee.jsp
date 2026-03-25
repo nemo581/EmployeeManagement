@@ -140,8 +140,11 @@
 
                 <div class="employee-main-info">
                     <h1 class="employee-name">ФИО: ${employee.fullName}</h1>
-                    <c:url var="employeeUrl" value="/employee/edit?id=${employee.employeeId}"/>
-                    <a href="${employeeUrl}" class="employee-link">
+                    <c:url var="employeeEditUrl" value="/employee">
+                        <c:param name="id" value="${employee.employeeId}"/>
+                        <c:param name="action" value="edit"/>
+                    </c:url>
+                    <a href="${employeeEditUrl}" class="employee-link">
                         <strong>✏️ >>Редактировать<<</strong>
                     </a>
                     <div class="employee-position">Позиция: ${employee.position != null ? employee.position : '—'}</div>

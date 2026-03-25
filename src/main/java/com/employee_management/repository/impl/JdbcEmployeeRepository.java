@@ -5,11 +5,16 @@ import com.employee_management.repository.EmployeeRepository;
 import com.employee_management.repository.query.SqlQuery;
 import com.employee_management.util.connection.DbConnection;
 
-import java.sql.*;
-import java.sql.Date;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JdbcEmployeeRepository implements EmployeeRepository {
@@ -43,9 +48,18 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
                 employee_list.add(employee);
             }
             findAllEmployeesWithContacts(employee_list);
-            for (Employee empl : employee_list) {
-                System.out.println(empl);
+            /* P-R-I-N-T  I-N-F-O */
+            int count = employee_list.size();
+            if (employee_list.isEmpty()) {
+                System.out.println("Список пуст!");
+            } else if (count == 1) {
+                System.out.println("Получен: " + employee_list.size() + " сотрудник");
+            } else if (count == 2 || count == 3 || count == 4) {
+                System.out.println("Получено: " + employee_list.size() + " сотрудника");
+            } else {
+                System.out.println("Получено: " + employee_list.size() + " сотрудников");
             }
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -61,10 +75,6 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
             preparedStatement.setLong(1, id);
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 if (rs.next()) {
-//                    employee = new Employee(rs.getString("first_name"),
-//                            rs.getString("last_name"),
-//                            rs.getString("middle_name"));
-//                    employee.setEmployeeId(id);
                     employee = new Employee();
                     employee.setEmployeeId(rs.getInt("employee_id"));
                     employee.setTabNumber(rs.getString("tab_number"));
@@ -102,6 +112,7 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
         System.out.println(">>" + employee);
         return employee;
     }
+
     @Override
     public List<Phone> findPhoneByEmployeeId(int employeeId) {
         List<Phone> employeePhones = new ArrayList<>();
