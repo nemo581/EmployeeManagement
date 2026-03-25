@@ -69,7 +69,9 @@ public enum SqlQuery {
             e.deleted_at,
 
             -- текущее назначение
+            curr_dep.id            AS current_department_id,
             curr_dep.name          AS current_department_name,
+            curr_pos.id            AS current_position_id,
             curr_pos.name          AS current_position_name,
             curr_assign.assignment_date,
             curr_assign.end_date,
@@ -118,7 +120,7 @@ public enum SqlQuery {
               AND is_active = 1
               AND deleted_at IS NULL;"""),
 
-    GET_EMPLOYEES_CONTACT_BY_ID("""
+    GET_EMPLOYEES_CONTACTS_BY_ID("""
             SELECT\s
                     'phone' AS source,
                     employee_id,

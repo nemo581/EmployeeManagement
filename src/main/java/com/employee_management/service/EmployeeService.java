@@ -8,7 +8,7 @@ import java.util.List;
 public class EmployeeService {
     private static final EmployeeRepository employeeRepository = new JdbcEmployeeRepository();
     public static List<Employee> getAllEmployees() {
-        return employeeRepository.findAllEmployee();
+        return employeeRepository.findAllEmployees();
     }
     public static Employee getEmployeeById(int id) {
         return employeeRepository.findEmployeeById(id);

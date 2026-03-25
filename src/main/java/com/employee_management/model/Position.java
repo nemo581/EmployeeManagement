@@ -18,7 +18,8 @@ public class Position {
     public Position() {
     }
 
-    public Position(String name) {
+    public Position(Integer id, String name) {
+        this.id = id;
         this.name = name;
     }
 

@@ -7,10 +7,11 @@ import com.employee_management.model.Phone;
 import java.util.List;
 
 public interface EmployeeRepository {
-    public List<Employee> findAllEmployee();
-    public Employee findEmployeeById(int id);
-    public void findAllEmployeesWithContacts(List<Employee> employeesDto);
-    public List<Phone> findPhoneByEmployeeId(int employeeId);
-    public List<Email> findEmailByEmployeeId(int employeeId);
+    public List<Employee> findAllEmployees();
+    public Employee findEmployeeById(Integer id);
+    public void findAllEmployeesContacts(List<Employee> employeesDto);
+    public void findEmployeesContactsById(Employee employee);
+    public List<Phone> findPhoneByEmployeeId(Integer employeeId);
+    public List<Email> findEmailByEmployeeId(Integer employeeId);
     public void addEmployee(Employee employee);
 }

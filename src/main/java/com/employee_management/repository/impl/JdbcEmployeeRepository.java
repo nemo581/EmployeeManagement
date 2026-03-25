@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class JdbcEmployeeRepository implements EmployeeRepository {
     @Override
-    public List<Employee> findAllEmployee() {
+    public List<Employee> findAllEmployees() {
         List<Employee> employee_list = new ArrayList<>();
         String sql = SqlQuery.GET_ALL_EMPLOYEES.getQuery();
         try (Connection connection = DbConnection.getConnection();
@@ -33,8 +33,8 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
                 employee.setEmployeeId(rs.getInt("employee_id"));
                 String tab_number = rs.getString("tab_number");
                 employee.setTabNumber((tab_number != null && !tab_number.isEmpty()) ? tab_number : null);
-                employee.setDepartment(new Department(rs.getString("department_name")));
-                employee.setPosition(new Position(rs.getString("position_name")));
+                employee.setDepartment(new Department(rs.getInt("department_id"), rs.getString("department_name")));
+                employee.setPosition(new Position(rs.getInt("position_id"), rs.getString("position_name")));
                 String shift = rs.getString("shift");
                 employee.setShift((shift != null && !shift.isEmpty()) ? shift : null);
                 employee.setBirthDate(rs.getObject("birth_date", LocalDate.class));
@@ -47,7 +47,7 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
                 employee.setDeletedAt(rs.getObject("deleted_at", LocalDateTime.class));
                 employee_list.add(employee);
             }
-            findAllEmployeesWithContacts(employee_list);
+            findAllEmployeesContacts(employee_list);
             /* P-R-I-N-T  I-N-F-O */
             int count = employee_list.size();
             if (employee_list.isEmpty()) {
@@ -67,7 +67,7 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
     }
 
     @Override
-    public Employee findEmployeeById(int id) {
+    public Employee findEmployeeById(Integer id) {
         Employee employee = null;
         String sql = SqlQuery.GET_EMPLOYEE_BY_ID.getQuery();
         try (Connection connection = DbConnection.getConnection();
@@ -78,18 +78,20 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
                     employee = new Employee();
                     employee.setEmployeeId(rs.getInt("employee_id"));
                     employee.setTabNumber(rs.getString("tab_number"));
+                    employee.setDepartment(new Department(rs.getInt("current_department_id"), rs.getString("current_department_name")));
+                    employee.setPosition(new Position(rs.getInt("current_position_id"), rs.getString("current_position_name")));
+                    employee.setShift(rs.getString("shift"));
                     employee.setFirstName(rs.getString("first_name"));
                     employee.setLastName(rs.getString("last_name"));
                     employee.setMiddleName(rs.getString("middle_name"));
                     employee.setBirthDate(rs.getObject("birth_date", LocalDate.class));
                     employee.setPhotoPath(rs.getString("photo_path"));
-                    employee.setShift(rs.getString("shift"));
                     employee.setHireDate(rs.getObject("hire_date", LocalDate.class));
                     employee.setTerminationDate(rs.getObject("termination_date", LocalDateTime.class));
                     employee.setCreateAt(rs.getObject("created_at", LocalDateTime.class));
                     employee.setUpdatedAt(rs.getObject("updated_at", LocalDateTime.class));
-                    employee.setActive(rs.getBoolean("is_active"));
                     employee.setDeletedAt(rs.getObject("deleted_at", LocalDateTime.class));
+                    employee.setActive(rs.getBoolean("is_active"));
 
                 }
             } catch (SQLException e) {
@@ -98,23 +100,15 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
-
         if (employee != null) {
-            List<Phone> employeePhones = findPhoneByEmployeeId(id);
-            for (Phone phone : employeePhones) {
-                employee.setPhone(phone);
-            }
-            List<Email> employeeEmails = findEmailByEmployeeId(id);
-            for (Email email : employeeEmails) {
-                employee.setEmail(email);
-            }
+            findEmployeesContactsById(employee);
         }
         System.out.println(">>" + employee);
         return employee;
     }
 
     @Override
-    public List<Phone> findPhoneByEmployeeId(int employeeId) {
+    public List<Phone> findPhoneByEmployeeId(Integer employeeId) {
         List<Phone> employeePhones = new ArrayList<>();
         String sql = SqlQuery.GET_PHONE_BY_EMPLOYEE_ID.getQuery();
         try (Connection connection = DbConnection.getConnection();
@@ -142,7 +136,7 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
     }
 
     @Override
-    public List<Email> findEmailByEmployeeId(int employeeId) {
+    public List<Email> findEmailByEmployeeId(Integer employeeId) {
         List<Email> employeeEmails = new ArrayList<>();
         String sql = SqlQuery.GET_EMAIL_BY_EMPLOYEE_ID.getQuery();
         try (Connection connection = DbConnection.getConnection();
@@ -169,7 +163,7 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
     }
 
     @Override
-    public void findAllEmployeesWithContacts(List<Employee> employeesDto) {
+    public void findAllEmployeesContacts(List<Employee> employeesDto) {
         if (employeesDto.isEmpty()) return;
         Map<Integer, Employee> employeeById = employeesDto.stream()
                 .collect(Collectors.toMap(Employee::getEmployeeId, emp -> emp));
@@ -203,6 +197,37 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
                         case "email":
                             Email email = new Email(value, ContactType.fromTitle(type), isMain, isActive);
                             emp.setEmail(email);
+                            break;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void findEmployeesContactsById(Employee employee) {
+        String sql = SqlQuery.GET_EMPLOYEES_CONTACTS_BY_ID.getQuery();
+        try (Connection connection = DbConnection.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+            preparedStatement.setInt(1, employee.getEmployeeId()); // Phones
+            preparedStatement.setInt(2, employee.getEmployeeId()); // Emails
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                while (rs.next()) {
+                    String source = rs.getString("source");
+                    String value = rs.getString("value");
+                    String type = rs.getString("type");
+                    boolean isMain = rs.getBoolean("is_main");
+                    boolean isActive = rs.getBoolean("is_active");
+                    switch (source) {
+                        case "phone":
+                            Phone phone = new Phone(value, ContactType.fromTitle(type), isMain, isActive);
+                            employee.setPhone(phone);
+                            break;
+                        case "email":
+                            Email email = new Email(value, ContactType.fromTitle(type), isMain, isActive);
+                            employee.setEmail(email);
                             break;
                     }
                 }
