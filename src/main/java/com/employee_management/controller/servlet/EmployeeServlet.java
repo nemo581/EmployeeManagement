@@ -50,17 +50,16 @@ public class EmployeeServlet extends HttpServlet {
                 req.setAttribute("departments", DepartmentService.getAllDepartments());
                 req.setAttribute("positions", PositionService.getAllPositions());
                 req.setAttribute("edit", "true");
-                req.getRequestDispatcher("/WEB-INF/jsp/temp-jsp/test_2.jsp").forward(req, resp);
-//                req.getRequestDispatcher("/WEB-INF/jsp/temp-jsp/my_test.jsp").forward(req, resp);
+                req.getRequestDispatcher("/WEB-INF/jsp/employee_edit.jsp").forward(req, resp);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println(req.getParameterMap());
+        System.out.println("Request:" + req.getParameterMap());
         for (Map.Entry<String, String[]> entry : req.getParameterMap().entrySet()) {
             System.out.println(entry.getKey() + " " + Arrays.toString(entry.getValue()));
         }
-        req.getRequestDispatcher("/WEB-INF/jsp/temp-jsp/test.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/jsp/employee_edit.jsp").forward(req, resp);
     }
 }
