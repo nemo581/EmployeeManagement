@@ -2,6 +2,7 @@ package com.employee_management.controller.servlet;
 
 import com.employee_management.model.Employee;
 import com.employee_management.service.EmployeeService;
+import com.employee_management.util.LogUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -22,8 +23,11 @@ public class AllEmployeesServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        LogUtil.logRequest(req, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(),
+                "ReceivedEmployees:/" + employeeList.size());
         req.setAttribute("employees", employeeList);
-
         req.getRequestDispatcher("/WEB-INF/jsp/all_employees.jsp").forward(req, resp);
+        LogUtil.logRequest(req, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(),
+                "SentEmployees:/" + employeeList.size(), "ResponseStatus:/" + resp.getStatus());
     }
 }
