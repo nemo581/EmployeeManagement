@@ -1,45 +1,134 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EMPLOYEE SYSTEM</title>
-    <style>
-        body { font-family: Arial, Helvetica, sans-serif; background-color: #f4f4f4; color: #333; margin: 30px; 
-            line-height: 1.5; font-size: 14px; }        
-        h1 { font-size: 1.8rem; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 8px;
-            margin-bottom: 25px; text-align: center; }        
-        .container { max-width: 750px; margin: 0 auto; background: #fff; padding: 25px;
-            border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .content-block { padding: 0 20px; }        
-        .status { padding: 15px 0; background: #ecf0f1; border-left: 4px solid #3498db; font-size: 1.1rem;
-            font-style: italic; color: #2c3e50; margin-bottom: 20px; }
-        .btn { display: block; width: 100%; padding: 16px 0; margin-bottom: 15px; background: #3498db;
-            color: white; font-size: 1.2rem; text-align: center; text-decoration: none; border-radius: 6px;
-            transition: all 0.3s; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .btn:hover { background: #2980b9; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
-        .btn:last-child { margin-bottom: 0; }
-        .footer { margin-top: 35px; text-align: center; color: #7f8c8d; font-size: 0.9rem; }
-    </style>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>EMPLOYEE SYSTEM</title>
+        <style>
+            *,
+            *::before, 
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                /*background-color: rgba(17, 34, 175, 1);*/
+                background-color: rgba(11, 53, 159, 1);
+                margin: 0px;
+                flex-direction: column;
+                min-height: 100vh;
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 13px;                
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            .top-strip, .bottom-strip {
+                /*background-color: rgba(11, 22, 156, 1);*/
+                background-color: rgba(2, 37, 125, 1);
+                height: 20px;
+                width: 100%;
+                position: fixed;
+                left:0;
+                z-index: 1000;
+            }
+
+            .top-strip {
+                top: 0;
+                box-shadow: 0px 0px 15px 5px rgba(57, 244, 0, 0.6);
+            }
+
+            .bottom-strip {
+                bottom: 0;
+                box-shadow: 0px 0px 15px 5px rgba(57, 244, 0, 0.6);
+            }
+
+            .content {
+                padding: 35px 15px;
+                flex-direction: column;
+                flex: 1;
+            }
+
+            .menu-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 70vh;
+                gap: 0px;
+            }
+
+            .menu-container a {
+                font-family: inherit;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                max-width: 440px;
+                min-height: 40px;
+                padding: 10px 45px;
+                margin-bottom: 2px;
+                text-decoration: none;
+                text-align: center;
+                box-sizing: border-box;
+                word-break: break-word; /* Разрывает длинные абракадабры */
+                overflow-wrap: anywhere; /* Дополнительная страховка */
+
+                /* Фиксированные цвета полосок (не меняются) */
+                --stripe-color: rgba(11, 53, 159, 1);
+                /* Цвет фона, который БУДЕТ меняться */
+                --current-bg: rgba(2, 37, 125, 0.7);
+
+                background-color: var(--current-bg);
+    
+                /* Убираем filter из анимации, оставляем только чистый цвет для скорости */
+                transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                            color 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+                will-change: background-color, color;
+                color: rgba(200, 211, 255, 0.8);
+    
+                background-image: 
+                linear-gradient(to right, 
+                var(--stripe-color) 2px, transparent 2px, 
+                transparent 4px, var(--stripe-color) 4px, 
+                var(--stripe-color) 6px, transparent 6px, 
+                transparent 8px, var(--stripe-color) 8px, 
+                var(--stripe-color) 10px, transparent 10px, 
+                transparent 12px),
+                linear-gradient(to left, 
+                var(--stripe-color) 2px, transparent 2px, 
+                transparent 4px, var(--stripe-color) 4px, 
+                var(--stripe-color) 6px, transparent 6px, 
+                transparent 8px, var(--stripe-color) 8px, 
+                var(--stripe-color) 10px, transparent 10px, 
+                transparent 12px);
+
+                background-repeat: no-repeat;
+                background-size: 12px 100%;
+                background-position: 2px 0, calc(100% - 2px) 0;
+            }
+
+            .menu-container a:hover {
+                /* Меняем ТОЛЬКО основной фон */
+                --current-bg: rgba(2, 37, 125, 1);    
+                /* Убираем filter, чтобы не затрагивать яркость темных полосок */
+                color: rgba(243, 246, 255, 1);
+            }            
+        </style>
+    </head>
     <body>
-        <div class="container">
-            <h1>EMPLOYEE SYSTEM</h1>
-            <div class="content-block">
-                <div class="status">
-                    Добро пожаловать в систему управления персоналом<br>
-                    Доступ разрешён • 2026
-                </div>
+        <header class="top-strip"></header>
+        <main class="content">
+            <div class="menu-container">
                 <a href="${pageContext.request.contextPath}/all_employees" class="btn">Список сотрудников</a>
                 <a href="${pageContext.request.contextPath}/employees_schedule" class="btn">График работы</a>
                 <a href="${pageContext.request.contextPath}/add_employee" class="btn">Добавить сотрудника</a>
                 <a href="${pageContext.request.contextPath}/department_management" class="btn">Управление департаментами и должностями</a>
             </div>
-            <div class="footer">
-                Java 21 • Apache Tomcat 11.0.15 • 2026
-            </div>
-        </div>
-        </body>
+        </main>
+        <footer class="bottom-strip"></footer>        
+    </body>
 </html>
