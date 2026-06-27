@@ -21,11 +21,8 @@ public class EmployeeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println(">> employee servlet");
         String action = req.getParameter("action");
         String idParam = req.getParameter("id");
-        System.out.println(">> action = " + action + "\n" +
-                           ">> idParam = " + idParam + "\n");
         int id;
         try {
             id = Integer.parseInt(idParam);
@@ -39,8 +36,14 @@ public class EmployeeServlet extends HttpServlet {
             resp.sendError(404);
             return;
         }
-
-        System.out.println(">> " + employee);
+        req.setAttribute("ip", req.getRemoteAddr());
+        req.setAttribute("session", req.getSession().getId());
+        req.setAttribute("protocol", req.getProtocol());
+        req.setAttribute("reqUri", req.getRequestURI());
+        req.setAttribute("serverPort", req.getServerPort());
+        req.setAttribute("referer", req.getHeader("Referer"));
+        req.setAttribute("method", req.getMethod());
+        req.setAttribute("locale", req.getLocale().getLanguage());
         req.setAttribute("employee", employee);
         switch (action) {
             case "info":

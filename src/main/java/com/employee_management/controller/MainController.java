@@ -3,6 +3,7 @@ package com.employee_management.controller;
 import com.employee_management.util.LogUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDateTime;
@@ -34,8 +35,16 @@ import java.time.format.DateTimeFormatter;
 @Controller
 public class MainController {
     @GetMapping({"", "/"})
-    public String handleRootRequest(HttpServletRequest req) {
+    public String handleRootRequest(HttpServletRequest req, Model model) {
         LogUtil.logRequest(req, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName());
+        model.addAttribute("ip", req.getRemoteAddr());
+        model.addAttribute("session", req.getSession().getId());
+        model.addAttribute("protocol", req.getProtocol());
+        model.addAttribute("reqUri", req.getRequestURI());
+        model.addAttribute("serverPort", req.getServerPort());
+        model.addAttribute("referer", req.getHeader("Referer"));
+        model.addAttribute("method", req.getMethod());
+        model.addAttribute("local", req.getLocale().getLanguage());
         return "main";
     }
 }

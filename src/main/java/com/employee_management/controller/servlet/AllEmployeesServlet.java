@@ -27,10 +27,18 @@ public class AllEmployeesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         LogUtil.logRequest(req, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(),
                 "ReceivedEmployees:/" + employeeList.size());
+        req.setAttribute("ip", req.getRemoteAddr());
+        req.setAttribute("session", req.getSession().getId());
+        req.setAttribute("protocol", req.getProtocol());
+        req.setAttribute("reqUri", req.getRequestURI());
+        req.setAttribute("serverPort", req.getServerPort());
+        req.setAttribute("referer", req.getHeader("Referer"));
+        req.setAttribute("method", req.getMethod());
+        req.setAttribute("locale", req.getLocale().getLanguage());
         req.setAttribute("month", LocalDateTime.now().getMonth());
         req.setAttribute("year", LocalDateTime.now().getYear());
         req.setAttribute("employees", employeeList);
-        req.getRequestDispatcher("/WEB-INF/jsp/all_employees_new.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/jsp/all_employees.jsp").forward(req, resp);
         LogUtil.logRequest(req, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(),
                 "SentEmployees:/" + employeeList.size(), "ResponseStatus:/" + resp.getStatus());
     }

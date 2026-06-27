@@ -15,7 +15,6 @@
             }
 
             body {
-                /*background-color: rgba(17, 34, 175, 1);*/
                 background-color: rgba(11, 53, 159, 1);
                 margin: 0px;
                 flex-direction: column;
@@ -44,6 +43,14 @@
             .bottom-strip {
                 bottom: 0;
                 box-shadow: 0px 0px 15px 5px rgba(57, 244, 0, 0.6);
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                padding-right: 15px;
+                color: rgba(200, 211, 255, 0.8);
+                font-size: 12px;
+                font-family: sans-serif;
+                box-sizing: border-box;
             }
 
             .content {
@@ -129,6 +136,8 @@
                 <a href="${pageContext.request.contextPath}/department_management" class="btn">Управление департаментами и должностями</a>
             </div>
         </main>
-        <footer class="bottom-strip"></footer>        
+        <footer class="bottom-strip">
+            ${session} - [ referer: ${referer} ] :: [ method: ${method} ] :: [ local: ${local} ] -- ${protocol}://${ip}:${serverPort}${reqUri}
+        </footer>        
     </body>
 </html>
